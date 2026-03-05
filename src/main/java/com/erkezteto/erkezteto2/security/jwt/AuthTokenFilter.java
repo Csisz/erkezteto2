@@ -18,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@org.springframework.stereotype.Component
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Value("${jwt.secret}")
     private String secret;
