@@ -1,9 +1,8 @@
 package com.erkezteto.erkezteto2.repository.model;
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 public class Level {
@@ -30,6 +29,8 @@ public class Level {
     private String postai_jelzo;
     private boolean hatosagi;
 
+    public Level() {}
+
     public Level(String barcode, String ragszam, boolean tertiveveny, LocalDateTime datum, String szerv, String nev, String kuldo, Integer iranyitoszam, String helyseg, String utca, String tart, String iktsz, String komm, Integer db, String erkUserId, boolean scan, String cimzett_csop, boolean salesforce, Integer Page_Num, String postai_jelzo, boolean hatosagi) {
         this.barcode = barcode;
         this.ragszam = ragszam;
@@ -52,8 +53,10 @@ public class Level {
         this.Page_Num = Page_Num;
         this.postai_jelzo = postai_jelzo;
         this.hatosagi = hatosagi;
-
+    
     }
+
+    
 
     public void setBarcode(String barcode){
         this.barcode = barcode;

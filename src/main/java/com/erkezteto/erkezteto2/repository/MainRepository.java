@@ -11,7 +11,5 @@ import com.erkezteto.erkezteto2.repository.model.*;
 @Repository
 
 public interface MainRepository extends JpaRepository<Level, String>, JpaSpecificationExecutor<Level>{
-    public void saveLevel(Level level);
-    
     public List<Level> findAll(Specification<Level> spec);
 }

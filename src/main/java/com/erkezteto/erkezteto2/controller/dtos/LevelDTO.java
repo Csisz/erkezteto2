@@ -4,19 +4,19 @@ import java.time.LocalDateTime;
 
 public record LevelDTO(
     String barcode,
-    String ragszam, 
-    boolean Tert,
+    String ragszam,
+    Boolean Tert,
     LocalDateTime date,
-    String szervEgyKod, 
+    String szervEgyKod,
     String reciever,
-    String sender, 
-    int areaCode, 
-    String City, 
-    String address, 
-    String content, 
-    String regNum, 
-    String comment, 
-    String recievedBy, 
-    boolean toBeScanned) {
+    String sender,
+    Integer areaCode,
+    String City,
+    String address,
+    String content,
+    String regNum,
+    String comment,
+    String recievedBy,
+    Boolean toBeScanned) {
 
 }

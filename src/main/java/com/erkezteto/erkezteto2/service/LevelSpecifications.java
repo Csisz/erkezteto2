@@ -79,12 +79,12 @@ public class LevelSpecifications {
 
     public static Specification<Level> hasDeliveredBy(String recievedBy){
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("erkUserId"), recievedBy);
+            recievedBy == null ? null : criteriaBuilder.equal(root.get("erkUserId"), recievedBy);
     }
 
-    public static Specification<Level> isToBeScanned(boolean toBeScanned){
+    public static Specification<Level> isToBeScanned(Boolean toBeScanned){
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("scan"), toBeScanned);
+            toBeScanned == null ? null : criteriaBuilder.equal(root.get("scan"), toBeScanned);
     }
 
     public static Specification<Level> címzettCsop(String cimzett_csop){

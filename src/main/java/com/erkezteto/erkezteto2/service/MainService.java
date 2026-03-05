@@ -100,6 +100,7 @@ public class MainService {
             newPanasz.setErkUserId(panasz.recievedBy());
             newPanasz.setCimzett_csop(panasz.targetGroup());
             newPanasz.setScan(panasz.toBeScanned());
+            newPanasz.setHatosagi(panasz.hatosagi());
 
             mainRepository.save(newPanasz);
 
