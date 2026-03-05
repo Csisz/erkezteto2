@@ -31,30 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-# =========================
-# Logs
-# =========================
-*.log
-logs/
-
-# =========================
-# Environment / Secrets
-# =========================
-.env
-.env.*
-application-local.properties
-application-local.yml
-application-dev.properties
-application-dev.yml
-
-# =========================
-# OS Files
-# =========================
-.DS_Store
-Thumbs.db
-
-# =========================
-# Test coverage
-# =========================
-coverage/
