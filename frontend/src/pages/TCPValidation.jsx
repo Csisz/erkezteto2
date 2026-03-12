@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+const CONTRACT_TYPES = ['Mobilszolgáltatás', 'Internet', 'TV', 'Csomag', 'Üzleti']
+
 const blank = () => ({
   contractNumber: '',
   customerName:   '',
@@ -11,7 +13,7 @@ const blank = () => ({
 
 export default function TCPValidation() {
   const [form, setForm]       = useState(blank())
-  const [status, setStatus]   = useState(null) // 'valid' | 'invalid' | null
+  const [status, setStatus]   = useState(null)
   const [loading, setLoading] = useState(false)
 
   const set = field => e => setForm(f => ({ ...f, [field]: e.target.value }))
@@ -19,7 +21,6 @@ export default function TCPValidation() {
   const handleValidate = async () => {
     if (!form.contractNumber) return
     setLoading(true); setStatus(null)
-    // Simulated — replace with real endpoint when available
     await new Promise(r => setTimeout(r, 900))
     setStatus(form.contractNumber.startsWith('TCP') ? 'valid' : 'invalid')
     setLoading(false)
@@ -40,7 +41,6 @@ export default function TCPValidation() {
         </span>
       </div>
 
-      {/* Status banner */}
       {status === 'valid' && (
         <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-5 py-4 mb-5 text-green-700 text-sm font-medium">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5 flex-shrink-0">
@@ -78,15 +78,18 @@ export default function TCPValidation() {
                    placeholder="Ügyfél azonosítója" />
           </div>
           <div>
+            {/* Combobox: predefined options + free-text entry */}
             <label className="form-label">Szerződés típusa</label>
-            <select className="select-field" value={form.contractType} onChange={set('contractType')}>
-              <option value="">Válasszon típust…</option>
-              <option value="mobil">Mobilszolgáltatás</option>
-              <option value="internet">Internet</option>
-              <option value="tv">TV</option>
-              <option value="bundle">Csomag</option>
-              <option value="uzleti">Üzleti</option>
-            </select>
+            <input
+              className="input-field"
+              list="contract-types"
+              value={form.contractType}
+              onChange={set('contractType')}
+              placeholder="Válasszon vagy írjon be típust…"
+            />
+            <datalist id="contract-types">
+              {CONTRACT_TYPES.map(t => <option key={t} value={t} />)}
+            </datalist>
           </div>
           <div>
             <label className="form-label">Ellenőrzés dátuma</label>

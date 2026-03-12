@@ -8,16 +8,17 @@ const blankFilters = () => ({
 })
 
 const COLS = [
-  { key: 'barcode',   label: 'Vonalkód' },
-  { key: 'ragszam',   label: 'Ragszám' },
-  { key: 'datum',     label: 'Dátum', format: v => v ? new Date(v).toLocaleString('hu-HU') : '—' },
-  { key: 'szerv',     label: 'Szervegységkód' },
-  { key: 'nev',       label: 'Átvevő' },
-  { key: 'kuldo',     label: 'Küldő' },
-  { key: 'helyseg',   label: 'Helység' },
-  { key: 'tart',      label: 'Tartalom' },
-  { key: 'iktsz',     label: 'Iktatószám' },
-  { key: 'erkUserId', label: 'Érkeztető' },
+  { key: 'barcode',      label: 'Vonalkód' },
+  { key: 'ragszam',      label: 'Ragszám' },
+  { key: 'datum',        label: 'Dátum', format: v => v ? new Date(v).toLocaleString('hu-HU') : '—' },
+  { key: 'szerv',        label: 'Szervegységkód' },
+  { key: 'nev',          label: 'Átvevő' },
+  { key: 'kuldo',        label: 'Küldő' },
+  { key: 'helyseg',      label: 'Helység' },
+  { key: 'tart',         label: 'Tartalom' },
+  { key: 'iktsz',        label: 'Iktatószám' },
+  { key: 'cimzett_csop', label: 'Cimzett csoport' },
+  { key: 'erkUserId',    label: 'Érkeztető' },
 ]
 
 const filterFields = [
@@ -32,10 +33,11 @@ const filterFields = [
 ]
 
 export default function Reports() {
-  const [filters, setFilters] = useState(blankFilters())
-  const [results, setResults] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error,   setError]   = useState(null)
+  const [filters, setFilters]     = useState(blankFilters())
+  const [excludeMode, setExclude] = useState(false)
+  const [results, setResults]     = useState(null)
+  const [loading, setLoading]     = useState(false)
+  const [error,   setError]       = useState(null)
 
   const set = field => e => setFilters(f => ({ ...f, [field]: e.target.value }))
 
@@ -43,14 +45,19 @@ export default function Reports() {
     e.preventDefault()
     setLoading(true); setError(null)
     try {
-      const payload = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))
+      const payload = {
+        ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '')),
+        excludeMode,
+      }
       const { data } = await getLevels(payload)
       setResults(data)
     } catch { setError('Hiba a lekérdezés során. Kérjük, próbálja újra.') }
     finally { setLoading(false) }
   }
 
-  const handleReset = () => { setFilters(blankFilters()); setResults(null); setError(null) }
+  const handleReset = () => {
+    setFilters(blankFilters()); setResults(null); setError(null); setExclude(false)
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
@@ -61,13 +68,48 @@ export default function Reports() {
 
       {/* Filter panel */}
       <div className="card p-6">
-        <p className="section-title mb-4">Szűrők</p>
+        <div className="flex items-center justify-between mb-4">
+          <p className="section-title">Szűrők</p>
+
+          {/* Include / Exclude toggle */}
+          <button
+            type="button"
+            onClick={() => setExclude(e => !e)}
+            title={excludeMode ? 'Kizárja a megadott értékeket tartalmazó rekordokat' : 'Megadott értékeket tartalmazó rekordokat mutat'}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border-2 transition-all duration-150
+                        ${excludeMode
+                          ? 'bg-red-50 border-red-400 text-red-600'
+                          : 'bg-ygreen/10 border-ygreen text-yblue'}`}
+          >
+            {excludeMode ? (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
+                  <circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/>
+                </svg>
+                Kizárja a találatokat
+              </>
+            ) : (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
+                  <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                </svg>
+                Tartalmaz
+              </>
+            )}
+          </button>
+        </div>
+
         <form onSubmit={handleSearch}>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {filterFields.map(({ field, label }) => (
               <div key={field}>
                 <label className="form-label">{label}</label>
-                <input className="input-field" value={filters[field]} onChange={set(field)} placeholder={label} />
+                <input
+                  className={`input-field ${excludeMode ? 'border-red-200 focus:ring-red-400' : ''}`}
+                  value={filters[field]}
+                  onChange={set(field)}
+                  placeholder={excludeMode ? `Kizárt: ${label}` : label}
+                />
               </div>
             ))}
           </div>
@@ -98,7 +140,7 @@ export default function Reports() {
         </div>
       )}
 
-      {/* Results table */}
+      {/* Results */}
       {results !== null && (
         <div className="card overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">

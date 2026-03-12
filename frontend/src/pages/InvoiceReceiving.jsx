@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { postPanasz } from '../api'
 import { useAuth } from '../context/AuthContext'
 
@@ -36,6 +36,7 @@ export default function InvoiceReceiving() {
   const [form, setForm]       = useState(blank(user?.username))
   const [status, setStatus]   = useState(null)
   const [loading, setLoading] = useState(false)
+  const firstFieldRef         = useRef(null)
 
   const set = field => e => setForm(f => ({ ...f, [field]: e.target.value }))
   const tog = field => () => setForm(f => ({ ...f, [field]: !f[field] }))
@@ -47,6 +48,7 @@ export default function InvoiceReceiving() {
       await postPanasz({ ...form, areaCode: form.areaCode ? parseInt(form.areaCode) : null })
       setStatus('success')
       setForm(blank(user?.username))
+      setTimeout(() => firstFieldRef.current?.focus(), 50)
     } catch { setStatus('error') }
     finally { setLoading(false) }
   }
@@ -82,7 +84,7 @@ export default function InvoiceReceiving() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="form-label">Vonalkód</label>
-              <input className="input-field" value={form.barcode} onChange={set('barcode')} placeholder="Vonalkód" />
+              <input ref={firstFieldRef} className="input-field" value={form.barcode} onChange={set('barcode')} placeholder="Vonalkód" />
             </div>
             <div>
               <label className="form-label">Ragszám</label>
@@ -153,7 +155,7 @@ export default function InvoiceReceiving() {
         </div>
 
         <div className="flex justify-end gap-3">
-          <button type="button" onClick={() => setForm(blank(user?.username))} className="btn-outline">
+          <button type="button" onClick={() => { setForm(blank(user?.username)); firstFieldRef.current?.focus() }} className="btn-outline">
             Törlés
           </button>
           <button type="submit" disabled={loading} className="btn-primary">

@@ -17,6 +17,7 @@ public record LevelDTO(
     String regNum,
     String comment,
     String recievedBy,
-    Boolean toBeScanned) {
+    Boolean toBeScanned,
+    Boolean excludeMode) {
 
 }

@@ -115,27 +115,26 @@ public class MainService {
 
 
     public List<Level> search(LevelDTO dto) {
+        boolean excl = Boolean.TRUE.equals(dto.excludeMode());
 
         Specification<Level> spec = Specification
-        .where(LevelSpecifications.hasBarcode(dto.barcode()))
-        .and(LevelSpecifications.hasRagszam(dto.ragszam()))
+        .where(LevelSpecifications.hasBarcode(dto.barcode(), excl))
+        .and(LevelSpecifications.hasRagszam(dto.ragszam(), excl))
         .and(LevelSpecifications.isTert(dto.Tert()))
         .and(LevelSpecifications.hasDate(dto.date()))
-        .and(LevelSpecifications.hasSzEK(dto.szervEgyKod()))
-        .and(LevelSpecifications.hasReciever(dto.reciever()))
-        .and(LevelSpecifications.hasSender(dto.sender()))
+        .and(LevelSpecifications.hasSzEK(dto.szervEgyKod(), excl))
+        .and(LevelSpecifications.hasReciever(dto.reciever(), excl))
+        .and(LevelSpecifications.hasSender(dto.sender(), excl))
         .and(LevelSpecifications.hasAreaCode(dto.areaCode()))
-        .and(LevelSpecifications.hasAddress(dto.address()))
-        .and(LevelSpecifications.hasCity(dto.City()))
-        .and(LevelSpecifications.hasContent(dto.content()))
-        .and(LevelSpecifications.hasRegNum(dto.regNum()))
-        .and(LevelSpecifications.hasComment(dto.comment()))
-        .and(LevelSpecifications.hasDeliveredBy(dto.recievedBy()))
+        .and(LevelSpecifications.hasAddress(dto.address(), excl))
+        .and(LevelSpecifications.hasCity(dto.City(), excl))
+        .and(LevelSpecifications.hasContent(dto.content(), excl))
+        .and(LevelSpecifications.hasRegNum(dto.regNum(), excl))
+        .and(LevelSpecifications.hasComment(dto.comment(), excl))
+        .and(LevelSpecifications.hasDeliveredBy(dto.recievedBy(), excl))
         .and(LevelSpecifications.isToBeScanned(dto.toBeScanned()));
 
         return mainRepository.findAll(spec);
-
-
     }
 
     public ResponseEntity<?> login(UserDTO user) {
