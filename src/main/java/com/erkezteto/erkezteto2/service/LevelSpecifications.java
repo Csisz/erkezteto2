@@ -7,9 +7,11 @@ import com.erkezteto.erkezteto2.repository.model.Level;
 
 public class LevelSpecifications {
 
+    private static final Specification<Level> MATCH_ALL = (root, query, cb) -> cb.conjunction();
+
     /** Case-insensitive LIKE or NOT LIKE for string fields. */
     private static Specification<Level> stringSpec(String field, String value, boolean exclude) {
-        if (value == null || value.isBlank()) return null;
+        if (value == null || value.isBlank()) return MATCH_ALL;
         String pattern = "%" + value.toLowerCase() + "%";
         return (root, query, cb) -> exclude
             ? cb.notLike(cb.lower(root.get(field)), pattern)
@@ -25,13 +27,13 @@ public class LevelSpecifications {
     }
 
     public static Specification<Level> isTert(Boolean tert) {
-        return (root, query, cb) ->
-            tert == null ? null : cb.equal(root.get("tertiveveny"), tert);
+        if (tert == null) return MATCH_ALL;
+        return (root, query, cb) -> cb.equal(root.get("tertiveveny"), tert);
     }
 
     public static Specification<Level> hasDate(LocalDateTime date) {
-        return (root, query, cb) ->
-            date == null ? null : cb.equal(root.get("datum"), date);
+        if (date == null) return MATCH_ALL;
+        return (root, query, cb) -> cb.equal(root.get("datum"), date);
     }
 
     public static Specification<Level> hasSzEK(String szervEgKod, boolean exclude) {
@@ -47,8 +49,8 @@ public class LevelSpecifications {
     }
 
     public static Specification<Level> hasAreaCode(Integer areaCode) {
-        return (root, query, cb) ->
-            areaCode == null ? null : cb.equal(root.get("iranyitoszam"), areaCode);
+        if (areaCode == null) return MATCH_ALL;
+        return (root, query, cb) -> cb.equal(root.get("iranyitoszam"), areaCode);
     }
 
     public static Specification<Level> hasCity(String city, boolean exclude) {
@@ -72,8 +74,8 @@ public class LevelSpecifications {
     }
 
     public static Specification<Level> hasPageNum(Integer pageNum) {
-        return (root, query, cb) ->
-            pageNum == null ? null : cb.equal(root.get("db"), pageNum);
+        if (pageNum == null) return MATCH_ALL;
+        return (root, query, cb) -> cb.equal(root.get("db"), pageNum);
     }
 
     public static Specification<Level> hasDeliveredBy(String recievedBy, boolean exclude) {
@@ -81,8 +83,8 @@ public class LevelSpecifications {
     }
 
     public static Specification<Level> isToBeScanned(Boolean toBeScanned) {
-        return (root, query, cb) ->
-            toBeScanned == null ? null : cb.equal(root.get("scan"), toBeScanned);
+        if (toBeScanned == null) return MATCH_ALL;
+        return (root, query, cb) -> cb.equal(root.get("scan"), toBeScanned);
     }
 
     public static Specification<Level> cimzettCsop(String cimzett_csop, boolean exclude) {
@@ -90,8 +92,8 @@ public class LevelSpecifications {
     }
 
     public static Specification<Level> isSalesforce(Boolean salesforce) {
-        return (root, query, cb) ->
-            salesforce == null ? null : cb.equal(root.get("salesforce"), salesforce);
+        if (salesforce == null) return MATCH_ALL;
+        return (root, query, cb) -> cb.equal(root.get("salesforce"), salesforce);
     }
 
     public static Specification<Level> hasPostaiJelzo(String postai_jelzo, boolean exclude) {
@@ -99,7 +101,7 @@ public class LevelSpecifications {
     }
 
     public static Specification<Level> isHatosagi(Boolean hatosagi) {
-        return (root, query, cb) ->
-            hatosagi == null ? null : cb.equal(root.get("hatosagi"), hatosagi);
+        if (hatosagi == null) return MATCH_ALL;
+        return (root, query, cb) -> cb.equal(root.get("hatosagi"), hatosagi);
     }
 }
